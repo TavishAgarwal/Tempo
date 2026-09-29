@@ -1,0 +1,34 @@
+data/
+results/
+.env
+node_modules/
+__pycache__/
+.venv/
+*.pyc
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.DS_Store
+frontend/dist/
+*.egg-info/
+.hypothesis/
+results_old_profile
+results_prev_interim
+results_prev_untuned
+
+# secrets and local config
+.env.*
+!.env.example
+.claude/
+
+# misc build / tooling artefacts
+*.log
+*.tsbuildinfo
+.import_linter_cache/
+coverage/
+.coverage
+htmlcov/
+dist/
+build/
+.vite/
+results_*/
