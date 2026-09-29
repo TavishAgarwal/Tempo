@@ -1,0 +1,14 @@
+# Speed-based emission factor in the COPERT / EMEP-EEA functional form:
+#   EF(v) [g/km] = (a + c*v + e*v^2) / (1 + b*v + d*v^2),  v in km/h, valid for v in [v_min, v_max]
+# IMPORTANT: the coefficients below are an ILLUSTRATIVE U-shaped curve (CO2, light vehicle), NOT
+# values taken from COPERT or EMEP/EEA. Replace them with the published coefficients for the
+# vehicle class used before quoting any absolute emission figure (docs/limitations.md).
+label: "Speed-based CO2 estimate (illustrative coefficients, not COPERT-calibrated)"
+vehicle: light_commercial_illustrative
+v_min_kmph: 5.0
+v_max_kmph: 110.0
+a: 300.0
+b: 0.0
+c: -5.5
+d: 0.0
+e: 0.045

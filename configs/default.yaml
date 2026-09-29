@@ -1,0 +1,58 @@
+# All tunable constants live here (rules.md: no magic numbers in code).
+time:
+  slot_minutes: 15
+  n_slots: 96
+swarm:
+  size: 12
+  alpha_start: 1.0
+  alpha_end: 0.5
+qpso:
+  u_floor: 1.0e-12
+pso:
+  inertia_start: 0.9
+  inertia_end: 0.4
+  c1: 1.5
+  c2: 1.5
+  vmax: 0.25
+ga:
+  elite_fraction: 0.2
+  mutant_fraction: 0.2
+  inherit_prob: 0.7
+stall:
+  iterations: 30
+  reinit_fraction: 0.30
+vnd:
+  candidate_k: 15
+  neighbourhoods: [relocate, swap, two_opt, two_opt_star, or_opt]
+  max_passes: 50
+  enabled: true
+write_back: true
+budget_s:
+  plan_n100: 30
+  plan_n200: 60
+  reopt: 10
+  default: 10
+objective:
+  congestion_ratio_threshold: 0.5
+  presets:
+    fastest:        { w_T: 1.0, w_D: 0.0,  w_C: 0.0 }
+    balanced:       { w_T: 1.0, w_D: 0.25, w_C: 0.25 }
+    low_congestion: { w_T: 1.0, w_D: 0.1,  w_C: 0.6 }
+  preset: fastest
+  c_ref_floor_fraction: 0.05
+  excess_vehicle_penalty: 10.0
+reopt:
+  warm_fraction: 0.5
+  warm_noise: 0.05
+  stability_mu: 0.0
+incident:
+  blocked_factor: 0.1
+  heavy_factor: 0.4
+sim:
+  horizon_wrap: true
+fallback:
+  target_s: 1.0
+seeds:
+  default_n: 20
+  small_n: 30
+  small_n_threshold: 100

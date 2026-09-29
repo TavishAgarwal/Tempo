@@ -1,0 +1,27 @@
+# Compact Delhi zone: Connaught Place / Central Delhi (mixed arterial + residential).
+zone_name: Central Delhi (Connaught Place)
+bbox: { north: 28.6420, south: 28.6150, east: 77.2300, west: 77.1900 }
+network_type: drive
+depot_hint: { lat: 28.6280, lon: 77.2090 }
+default_speed_kph:
+  motorway: 60
+  trunk: 45
+  primary: 35
+  secondary: 30
+  tertiary: 25
+  residential: 20
+  other: 20
+road_classes: [motorway, trunk, primary, secondary, tertiary, residential, other]
+# Calibrated time-of-day profile (synthetic): network-wide speed ratio (1.0 = fastest hour) per
+# clock hour, weekday average, read from the TomTom Traffic Index 2025 New Delhi hourly grid
+# (10 km travel time, Mon/Tue columns, reference 14 min 45 s at 03:00) on 2026-10-02.
+# ratio(h) = 14.75 min / travel time of the hour [h, h+1). See docs/calibration-notes.md.
+profile:
+  hourly_ratio: [0.90, 0.94, 0.97, 1.00, 0.96, 0.90, 0.89, 0.79, 0.68, 0.58, 0.58, 0.57,
+                 0.57, 0.56, 0.57, 0.57, 0.55, 0.49, 0.47, 0.52, 0.62, 0.72, 0.78, 0.83]
+  class_sensitivity: { motorway: 0.6, trunk: 0.9, primary: 1.0, secondary: 1.0, tertiary: 0.8, residential: 0.5, other: 0.5 }
+scenario:
+  n_customers: 100
+  n_vehicles: 8
+  depart_h: 17.5
+  seed: 2026
