@@ -1,0 +1,96 @@
+[project]
+name = "taqpso"
+version = "0.1.0"
+description = "TA-QPSO: traffic-aware quantum-inspired vehicle routing (classical computation)"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "numpy>=1.26,<2.2",
+  "numba>=0.60,<0.62",
+  "scipy>=1.13,<1.16",
+  "pydantic>=2.7,<3",
+  "pydantic-settings>=2.3,<3",
+  "pyyaml>=6,<7",
+  "fastapi>=0.111,<1",
+  "uvicorn[standard]>=0.30,<1",
+  "highspy>=1.7,<2",
+  "pyvrp>=0.9,<1",
+  "pandas>=2.2,<3",
+  "matplotlib>=3.8,<4",
+  "shapely>=2.0,<3",
+]
+
+[project.optional-dependencies]
+build = ["osmnx>=1.9,<3"]
+bench = ["mamut-routing-lib"]
+dev = [
+  "pytest>=8", "pytest-timeout", "hypothesis>=6", "ruff", "mypy",
+  "pre-commit", "httpx", "import-linter", "types-pyyaml", "pandas-stubs",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["taqpso*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "T20", "NPY"]
+ignore = ["E741"]
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["T20"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
+files = ["taqpso"]
+disallow_untyped_decorators = false
+warn_unused_ignores = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+timeout = 300
+markers = ["slow: slow tests"]
+addopts = "-q"
+
+[tool.importlinter]
+root_package = "taqpso"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "solver is baseline-free"
+type = "forbidden"
+source_modules = ["taqpso.solver"]
+forbidden_modules = ["pyvrp", "highspy", "ortools", "taqpso.baselines", "taqpso.api", "taqpso.store", "taqpso.bench"]
+allow_indirect_imports = true
+
+[[tool.importlinter.contracts]]
+name = "pure modules"
+type = "forbidden"
+source_modules = ["taqpso.core", "taqpso.traffic"]
+forbidden_modules = ["taqpso.api", "taqpso.store", "taqpso.bench"]
+allow_indirect_imports = true
+
+[[tool.importlinter.contracts]]
+name = "no networkx outside builder"
+type = "forbidden"
+source_modules = ["taqpso.core", "taqpso.solver", "taqpso.traffic", "taqpso.sim", "taqpso.paths", "taqpso.dynamic", "taqpso.api"]
+forbidden_modules = ["networkx", "osmnx"]
+allow_indirect_imports = true
+
+[[tool.mypy.overrides]]
+module = ["taqpso.solver.vnd", "taqpso.solver.split", "taqpso.solver.split_fleet",
+          "taqpso.solver.seeds", "taqpso.core.evaluate", "taqpso.traffic.igp",
+          "taqpso.traffic.td_kernels", "taqpso.paths.td_dijkstra", "taqpso.sim.kernels"]
+disallow_untyped_defs = false
+disallow_untyped_calls = false
+disallow_any_generics = false
+warn_return_any = false
+
+[[tool.mypy.overrides]]
+module = ["taqpso.solver.runner", "taqpso.solver.optimizers.*", "taqpso.solver.keys"]
+disallow_any_generics = false
