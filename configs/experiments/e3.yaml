@@ -1,0 +1,6 @@
+# E3: value of traffic-aware planning. Plan with free-flow (static) vs time-dependent tables;
+# both plans are scored by the ground-truth simulator under the time-of-day profile.
+instances: [delhi_n50, delhi_demo]
+departures_h: [10.0, 17.5]
+solver: qpso
+budget_s: 10

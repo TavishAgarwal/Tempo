@@ -1,0 +1,13 @@
+# E4: incident recovery on the Delhi demo (100 customers, 8 vehicles, depart 17:30).
+instance: delhi_demo
+t_e_h: 18.0
+duration_h: 1.0
+scenarios:
+  block: { k_edges: 8, factor: 0.1 }
+  heavy: { k_edges: 20, factor: 0.4 }
+  zone: { k_edges: 30, factor: 0.1 }
+methods: [b0_fallback, taqpso_warm, b1_cold, b2_static, b3_pyvrp]
+budget_s: 10
+seeds: 20
+mu_values: [0.0, 0.002, 0.005, 0.01, 0.02, 0.05]
+mu_seeds: 10
