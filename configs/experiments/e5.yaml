@@ -1,0 +1,8 @@
+# E5: scaling. Budgets follow the NFRs (n=100: 30 s, n=200: 60 s).
+runs:
+  - { instance: delhi_n50, budget_s: 15 }
+  - { instance: delhi_demo, budget_s: 30 }
+  - { instance: delhi_n200, budget_s: 60 }
+  - { instance: delhi_n500, budget_s: 120, seeds: 3 }
+seeds: 5
+solver: qpso

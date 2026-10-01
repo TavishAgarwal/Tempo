@@ -1,0 +1,29 @@
+ga:
+  ga:
+    inherit_prob: 0.9
+  swarm:
+    size: 12
+  vnd:
+    gate_tolerance: null
+pso:
+  pso:
+    inertia_end: 0.6
+  swarm:
+    size: 6
+  vnd:
+    gate_tolerance: null
+qpso:
+  qpso:
+    attractor: dimension
+    space: key
+  swarm:
+    alpha_end: 0.01
+    alpha_start: 0.05
+    size: 6
+  vnd:
+    gate_tolerance: null
+random:
+  swarm:
+    size: 12
+  vnd:
+    gate_tolerance: null

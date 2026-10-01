@@ -1,0 +1,25 @@
+# Tuning set: disjoint from E2 / E2-large. delhi_tune3 (n = 150) was added for the second round so
+# that the step size and the VND gate are also chosen at a size where they matter.
+instances: [delhi_tune1, delhi_tune2, delhi_tune3]
+seeds: 5
+budget_s: 5
+budgets: { delhi_tune3: 15 }
+# every optimizer: swarm size x VND gate (null = full VND on every particle)
+common_axes:
+  - { path: [swarm, size], values: [6, 12] }
+  - { path: [vnd, gate_tolerance], values: [null, 0.02, 0.05] }
+own_axes:
+  qpso:
+    - { path: [qpso, attractor], values: [dimension, particle] }
+    - { path: [qpso, space], values: [key, rank] }
+    - values:  # alpha_start -> alpha_end (1.0 -> 0.5 is the first-round setting)
+        - { swarm: { alpha_start: 0.02, alpha_end: 0.005 } }
+        - { swarm: { alpha_start: 0.05, alpha_end: 0.01 } }
+        - { swarm: { alpha_start: 0.1, alpha_end: 0.02 } }
+        - { swarm: { alpha_start: 0.2, alpha_end: 0.05 } }
+        - { swarm: { alpha_start: 1.0, alpha_end: 0.5 } }
+  pso:
+    - { path: [pso, inertia_end], values: [0.2, 0.4, 0.6] }
+  ga:
+    - { path: [ga, inherit_prob], values: [0.5, 0.7, 0.9] }
+  random: []
