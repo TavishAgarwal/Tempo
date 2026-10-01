@@ -1,0 +1,8 @@
+# E2: QPSO vs classical at equal wall-clock budget + ablation. Evaluation instances are disjoint
+# from the tuning instances (configs/experiments/tuning.yaml). Every solver uses configs/tuned.yaml.
+# Ablation: qpso_v1 = first-round QPSO (textbook update, alpha 1.0 -> 0.5, full VND everywhere);
+# qpso_nogate = tuned QPSO with full VND on every particle.
+instances: [delhi_n30, delhi_n50, delhi_demo]
+solvers: [qpso, pso, ga, random, pyvrp]
+ablation: [qpso_novnd, random_novnd, qpso_nowb, qpso_v1, qpso_nogate]
+budget_s: 10

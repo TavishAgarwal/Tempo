@@ -1,0 +1,8 @@
+# E2 at scale (Phase 8, F19): n = 200 and n = 500, NFR budgets (n=200: 60 s, n=500: 120 s).
+# Same solvers, seeds rule (20 seeds for n > 100) and scoring as E2; ablation limited to the two
+# variants that separate the new QPSO update from the VND gate.
+instances: [delhi_n200, delhi_n500]
+solvers: [qpso, pso, ga, random, pyvrp]
+ablation: [qpso_v1, qpso_nogate]
+budget_s: 60
+budgets: { delhi_n200: 60, delhi_n500: 120 }
