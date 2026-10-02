@@ -1,0 +1,1489 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "TA-QPSO API",
+  "version": "0.1.0"
+ },
+ "paths": {
+  "/scenarios": {
+   "get": {
+    "summary": "List Scenarios",
+    "operationId": "list_scenarios_scenarios_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/ScenarioInfo"
+         },
+         "type": "array",
+         "title": "Response List Scenarios Scenarios Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/scenarios/{name}": {
+   "get": {
+    "summary": "Scenario Detail",
+    "operationId": "scenario_detail_scenarios__name__get",
+    "parameters": [
+     {
+      "name": "name",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Name"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/InstanceDetail"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/instances": {
+   "post": {
+    "summary": "Create Instance",
+    "operationId": "create_instance_instances_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/InstanceCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ScenarioInfo"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/solve": {
+   "post": {
+    "summary": "Solve",
+    "operationId": "solve_solve_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SolveRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/JobStatus"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/jobs/{job_id}": {
+   "get": {
+    "summary": "Get Job",
+    "operationId": "get_job_jobs__job_id__get",
+    "parameters": [
+     {
+      "name": "job_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Job Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/JobStatus"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/jobs/{job_id}/stop": {
+   "post": {
+    "summary": "Stop Job",
+    "operationId": "stop_job_jobs__job_id__stop_post",
+    "parameters": [
+     {
+      "name": "job_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Job Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Stop Job Jobs  Job Id  Stop Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/jobs/{job_id}/rescore": {
+   "post": {
+    "summary": "Rescore",
+    "description": "Re-simulate the job's current plan at another departure time (time-of-day slider).",
+    "operationId": "rescore_jobs__job_id__rescore_post",
+    "parameters": [
+     {
+      "name": "job_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Job Id"
+      }
+     },
+     {
+      "name": "depart",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "number",
+       "title": "Depart"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RescoreOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/incidents": {
+   "post": {
+    "summary": "Create Incident",
+    "operationId": "create_incident_incidents_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/IncidentRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/IncidentCreated"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/paths": {
+   "get": {
+    "summary": "Fastest Path",
+    "operationId": "fastest_path_paths_get",
+    "parameters": [
+     {
+      "name": "from_lon",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "number",
+       "title": "From Lon"
+      }
+     },
+     {
+      "name": "from_lat",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "number",
+       "title": "From Lat"
+      }
+     },
+     {
+      "name": "to_lon",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "number",
+       "title": "To Lon"
+      }
+     },
+     {
+      "name": "to_lat",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "number",
+       "title": "To Lat"
+      }
+     },
+     {
+      "name": "depart",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "number",
+       "title": "Depart"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PathOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/congestion": {
+   "get": {
+    "summary": "Congestion",
+    "operationId": "congestion_congestion_get",
+    "parameters": [
+     {
+      "name": "slot",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Slot"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CongestionOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/results": {
+   "get": {
+    "summary": "Results",
+    "operationId": "results_results_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/ResultTable"
+         },
+         "type": "array",
+         "title": "Response Results Results Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/results/{experiment}/{name}": {
+   "get": {
+    "summary": "Result File",
+    "operationId": "result_file_results__experiment___name__get",
+    "parameters": [
+     {
+      "name": "experiment",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Experiment"
+      }
+     },
+     {
+      "name": "name",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Name"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/live": {
+   "get": {
+    "summary": "Live",
+    "description": "Latest TomTom per-road-class speed ratios (cached snapshot; refresh=true re-fetches).",
+    "operationId": "live_live_get",
+    "parameters": [
+     {
+      "name": "refresh",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Refresh"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/LiveOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/jobs/{job_id}/emissions": {
+   "get": {
+    "summary": "Emissions",
+    "description": "Estimated emissions of the job's current plan (illustrative speed-based curve).",
+    "operationId": "emissions_jobs__job_id__emissions_get",
+    "parameters": [
+     {
+      "name": "job_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Job Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EmissionsOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/health": {
+   "get": {
+    "summary": "Health",
+    "operationId": "health_health_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "string"
+         },
+         "type": "object",
+         "title": "Response Health Health Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "CongestionEdge": {
+    "properties": {
+     "a": {
+      "prefixItems": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "number"
+       }
+      ],
+      "type": "array",
+      "maxItems": 2,
+      "minItems": 2,
+      "title": "A"
+     },
+     "b": {
+      "prefixItems": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "number"
+       }
+      ],
+      "type": "array",
+      "maxItems": 2,
+      "minItems": 2,
+      "title": "B"
+     },
+     "ratio": {
+      "type": "number",
+      "title": "Ratio"
+     },
+     "road_class": {
+      "type": "integer",
+      "title": "Road Class"
+     }
+    },
+    "type": "object",
+    "required": [
+     "a",
+     "b",
+     "ratio",
+     "road_class"
+    ],
+    "title": "CongestionEdge"
+   },
+   "CongestionOut": {
+    "properties": {
+     "slot": {
+      "type": "integer",
+      "title": "Slot"
+     },
+     "label": {
+      "type": "string",
+      "title": "Label"
+     },
+     "edges": {
+      "items": {
+       "$ref": "#/components/schemas/CongestionEdge"
+      },
+      "type": "array",
+      "title": "Edges"
+     }
+    },
+    "type": "object",
+    "required": [
+     "slot",
+     "label",
+     "edges"
+    ],
+    "title": "CongestionOut"
+   },
+   "CustomerIn": {
+    "properties": {
+     "lon": {
+      "type": "number",
+      "title": "Lon"
+     },
+     "lat": {
+      "type": "number",
+      "title": "Lat"
+     },
+     "demand": {
+      "type": "integer",
+      "minimum": 1.0,
+      "title": "Demand"
+     }
+    },
+    "type": "object",
+    "required": [
+     "lon",
+     "lat",
+     "demand"
+    ],
+    "title": "CustomerIn"
+   },
+   "EmissionsOut": {
+    "properties": {
+     "kg": {
+      "type": "number",
+      "title": "Kg"
+     },
+     "label": {
+      "type": "string",
+      "title": "Label"
+     }
+    },
+    "type": "object",
+    "required": [
+     "kg",
+     "label"
+    ],
+    "title": "EmissionsOut"
+   },
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "IncidentCreated": {
+    "properties": {
+     "job_id": {
+      "type": "string",
+      "title": "Job Id"
+     },
+     "affected_edges": {
+      "type": "integer",
+      "title": "Affected Edges"
+     }
+    },
+    "type": "object",
+    "required": [
+     "job_id",
+     "affected_edges"
+    ],
+    "title": "IncidentCreated"
+   },
+   "IncidentRequest": {
+    "properties": {
+     "job_id": {
+      "type": "string",
+      "title": "Job Id"
+     },
+     "edges": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "integer"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Edges"
+     },
+     "polygon": {
+      "anyOf": [
+       {
+        "items": {
+         "prefixItems": [
+          {
+           "type": "number"
+          },
+          {
+           "type": "number"
+          }
+         ],
+         "type": "array",
+         "maxItems": 2,
+         "minItems": 2
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Polygon"
+     },
+     "factor": {
+      "type": "number",
+      "maximum": 1.0,
+      "exclusiveMinimum": 0.0,
+      "title": "Factor",
+      "default": 0.1
+     },
+     "t_start": {
+      "type": "number",
+      "title": "T Start"
+     },
+     "t_end": {
+      "type": "number",
+      "title": "T End"
+     },
+     "budget_s": {
+      "type": "number",
+      "maximum": 120.0,
+      "minimum": 1.0,
+      "title": "Budget S",
+      "default": 10.0
+     },
+     "mu": {
+      "type": "number",
+      "minimum": 0.0,
+      "title": "Mu",
+      "default": 0.0
+     },
+     "seed": {
+      "type": "integer",
+      "title": "Seed",
+      "default": 0
+     }
+    },
+    "type": "object",
+    "required": [
+     "job_id",
+     "t_start",
+     "t_end"
+    ],
+    "title": "IncidentRequest"
+   },
+   "InstanceCreate": {
+    "properties": {
+     "name": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]{1,64}$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "depot_lon": {
+      "type": "number",
+      "title": "Depot Lon"
+     },
+     "depot_lat": {
+      "type": "number",
+      "title": "Depot Lat"
+     },
+     "customers": {
+      "items": {
+       "$ref": "#/components/schemas/CustomerIn"
+      },
+      "type": "array",
+      "maxItems": 300,
+      "minItems": 1,
+      "title": "Customers"
+     },
+     "capacity": {
+      "type": "integer",
+      "minimum": 1.0,
+      "title": "Capacity"
+     },
+     "n_vehicles": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "N Vehicles"
+     },
+     "depart_s": {
+      "type": "number",
+      "title": "Depart S",
+      "default": 63000.0
+     }
+    },
+    "type": "object",
+    "required": [
+     "depot_lon",
+     "depot_lat",
+     "customers",
+     "capacity"
+    ],
+    "title": "InstanceCreate"
+   },
+   "InstanceDetail": {
+    "properties": {
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "n_customers": {
+      "type": "integer",
+      "title": "N Customers"
+     },
+     "n_vehicles": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "N Vehicles"
+     },
+     "capacity": {
+      "type": "integer",
+      "title": "Capacity"
+     },
+     "depart_s": {
+      "type": "number",
+      "title": "Depart S"
+     },
+     "speed_source": {
+      "type": "string",
+      "title": "Speed Source",
+      "default": "Calibrated time-of-day profile (synthetic)"
+     },
+     "depot": {
+      "prefixItems": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "number"
+       }
+      ],
+      "type": "array",
+      "maxItems": 2,
+      "minItems": 2,
+      "title": "Depot"
+     },
+     "customers": {
+      "items": {
+       "$ref": "#/components/schemas/CustomerIn"
+      },
+      "type": "array",
+      "title": "Customers"
+     },
+     "bbox": {
+      "prefixItems": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "number"
+       },
+       {
+        "type": "number"
+       },
+       {
+        "type": "number"
+       }
+      ],
+      "type": "array",
+      "maxItems": 4,
+      "minItems": 4,
+      "title": "Bbox"
+     }
+    },
+    "type": "object",
+    "required": [
+     "name",
+     "n_customers",
+     "n_vehicles",
+     "capacity",
+     "depart_s",
+     "depot",
+     "customers",
+     "bbox"
+    ],
+    "title": "InstanceDetail"
+   },
+   "JobStatus": {
+    "properties": {
+     "job_id": {
+      "type": "string",
+      "title": "Job Id"
+     },
+     "kind": {
+      "type": "string",
+      "enum": [
+       "solve",
+       "incident"
+      ],
+      "title": "Kind"
+     },
+     "state": {
+      "type": "string",
+      "enum": [
+       "idle",
+       "solving",
+       "safe_plan",
+       "optimising",
+       "done",
+       "error",
+       "stopped"
+      ],
+      "title": "State"
+     },
+     "elapsed_s": {
+      "type": "number",
+      "title": "Elapsed S"
+     },
+     "message": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Message"
+     },
+     "solution": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/SolutionOut"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "run_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Run Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "job_id",
+     "kind",
+     "state",
+     "elapsed_s"
+    ],
+    "title": "JobStatus"
+   },
+   "LiveOut": {
+    "properties": {
+     "available": {
+      "type": "boolean",
+      "title": "Available"
+     },
+     "label": {
+      "type": "string",
+      "title": "Label"
+     },
+     "fetched_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Fetched At"
+     },
+     "age_s": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Age S"
+     },
+     "ratios": {
+      "additionalProperties": {
+       "type": "number"
+      },
+      "type": "object",
+      "title": "Ratios",
+      "default": {}
+     },
+     "message": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Message"
+     }
+    },
+    "type": "object",
+    "required": [
+     "available",
+     "label"
+    ],
+    "title": "LiveOut"
+   },
+   "MetricsOut": {
+    "properties": {
+     "T": {
+      "type": "number",
+      "title": "T"
+     },
+     "D": {
+      "type": "number",
+      "title": "D"
+     },
+     "C": {
+      "type": "number",
+      "title": "C"
+     },
+     "J": {
+      "type": "number",
+      "title": "J"
+     },
+     "K": {
+      "type": "integer",
+      "title": "K"
+     },
+     "route_T": {
+      "items": {
+       "type": "number"
+      },
+      "type": "array",
+      "title": "Route T",
+      "default": []
+     },
+     "route_load": {
+      "items": {
+       "type": "integer"
+      },
+      "type": "array",
+      "title": "Route Load",
+      "default": []
+     }
+    },
+    "type": "object",
+    "required": [
+     "T",
+     "D",
+     "C",
+     "J",
+     "K"
+    ],
+    "title": "MetricsOut"
+   },
+   "PathOut": {
+    "properties": {
+     "travel_s": {
+      "type": "number",
+      "title": "Travel S"
+     },
+     "distance_m": {
+      "type": "number",
+      "title": "Distance M"
+     },
+     "free_flow_travel_s": {
+      "type": "number",
+      "title": "Free Flow Travel S"
+     },
+     "geometry": {
+      "items": {
+       "items": {
+        "type": "number"
+       },
+       "type": "array"
+      },
+      "type": "array",
+      "title": "Geometry"
+     },
+     "free_flow_geometry": {
+      "items": {
+       "items": {
+        "type": "number"
+       },
+       "type": "array"
+      },
+      "type": "array",
+      "title": "Free Flow Geometry"
+     },
+     "depart_s": {
+      "type": "number",
+      "title": "Depart S"
+     }
+    },
+    "type": "object",
+    "required": [
+     "travel_s",
+     "distance_m",
+     "free_flow_travel_s",
+     "geometry",
+     "free_flow_geometry",
+     "depart_s"
+    ],
+    "title": "PathOut"
+   },
+   "RescoreOut": {
+    "properties": {
+     "depart_s": {
+      "type": "number",
+      "title": "Depart S"
+     },
+     "metrics": {
+      "$ref": "#/components/schemas/MetricsOut"
+     }
+    },
+    "type": "object",
+    "required": [
+     "depart_s",
+     "metrics"
+    ],
+    "title": "RescoreOut"
+   },
+   "ResultTable": {
+    "properties": {
+     "experiment": {
+      "type": "string",
+      "title": "Experiment"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "rows": {
+      "items": {
+       "additionalProperties": {
+        "anyOf": [
+         {
+          "type": "number"
+         },
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "type": "object"
+      },
+      "type": "array",
+      "title": "Rows"
+     },
+     "files": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Files"
+     }
+    },
+    "type": "object",
+    "required": [
+     "experiment",
+     "title",
+     "rows",
+     "files"
+    ],
+    "title": "ResultTable"
+   },
+   "ScenarioInfo": {
+    "properties": {
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "n_customers": {
+      "type": "integer",
+      "title": "N Customers"
+     },
+     "n_vehicles": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "N Vehicles"
+     },
+     "capacity": {
+      "type": "integer",
+      "title": "Capacity"
+     },
+     "depart_s": {
+      "type": "number",
+      "title": "Depart S"
+     },
+     "speed_source": {
+      "type": "string",
+      "title": "Speed Source",
+      "default": "Calibrated time-of-day profile (synthetic)"
+     }
+    },
+    "type": "object",
+    "required": [
+     "name",
+     "n_customers",
+     "n_vehicles",
+     "capacity",
+     "depart_s"
+    ],
+    "title": "ScenarioInfo"
+   },
+   "SolutionOut": {
+    "properties": {
+     "routes": {
+      "items": {
+       "items": {
+        "type": "integer"
+       },
+       "type": "array"
+      },
+      "type": "array",
+      "title": "Routes"
+     },
+     "depart": {
+      "type": "number",
+      "title": "Depart"
+     },
+     "metrics": {
+      "$ref": "#/components/schemas/MetricsOut"
+     },
+     "solver": {
+      "type": "string",
+      "title": "Solver"
+     },
+     "seed": {
+      "type": "integer",
+      "title": "Seed"
+     },
+     "budget": {
+      "type": "number",
+      "title": "Budget"
+     },
+     "geometry": {
+      "items": {
+       "items": {
+        "items": {
+         "type": "number"
+        },
+        "type": "array"
+       },
+       "type": "array"
+      },
+      "type": "array",
+      "title": "Geometry",
+      "default": []
+     }
+    },
+    "type": "object",
+    "required": [
+     "routes",
+     "depart",
+     "metrics",
+     "solver",
+     "seed",
+     "budget"
+    ],
+    "title": "SolutionOut"
+   },
+   "SolveRequest": {
+    "properties": {
+     "instance_id": {
+      "type": "string",
+      "title": "Instance Id"
+     },
+     "solver": {
+      "type": "string",
+      "enum": [
+       "qpso",
+       "pso",
+       "ga",
+       "random",
+       "pyvrp"
+      ],
+      "title": "Solver",
+      "default": "qpso"
+     },
+     "preset": {
+      "type": "string",
+      "enum": [
+       "fastest",
+       "balanced",
+       "low_congestion"
+      ],
+      "title": "Preset",
+      "default": "fastest"
+     },
+     "budget_s": {
+      "type": "number",
+      "maximum": 300.0,
+      "minimum": 1.0,
+      "title": "Budget S",
+      "default": 10.0
+     },
+     "seed": {
+      "type": "integer",
+      "title": "Seed",
+      "default": 0
+     },
+     "depart_s": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Depart S"
+     },
+     "live": {
+      "type": "boolean",
+      "title": "Live",
+      "default": false
+     }
+    },
+    "type": "object",
+    "required": [
+     "instance_id"
+    ],
+    "title": "SolveRequest"
+   },
+   "ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     },
+     "input": {
+      "title": "Input"
+     },
+     "ctx": {
+      "type": "object",
+      "title": "Context"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   }
+  }
+ }
+}
