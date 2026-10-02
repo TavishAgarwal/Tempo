@@ -1,0 +1,12 @@
+/* Tempo dashboard: dispatch-desk theme. Warm graphite, bone text, phosphor lime for "live", amber and coral for load.
+   Flat panels and hairlines only: no blur, no glow, no gradients. Always dark. */
+:root {
+  color-scheme: dark;
+  --bg: #0c0d0a; --surface: #131510; --raised: #1a1c16; --border: #2e3128; --rule: #444839;
+  --text: #e6e3d3; --text-muted: #8f8d7c;
+  --primary: #b8f04a; --success: #b8f04a; --warning: #f0b429; --danger: #ff6a45;
+  --glass: #131510; --glow: transparent;
+  --route-0: #b8f04a; --route-1: #f0b429; --route-2: #ff6a45; --route-3: #f27fc4;
+  --route-4: #4fd1b0; --route-5: #b79cff; --route-6: #e6e3d3; --route-7: #d4a373;
+  --cong-free: #b8f04a; --cong-light: #f0b429; --cong-heavy: #ff9f43; --cong-severe: #ff4d3d;
+}
