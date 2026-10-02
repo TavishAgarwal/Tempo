@@ -1,0 +1,10 @@
+services:
+  api:
+    build: { context: ., dockerfile: backend/Dockerfile }
+    environment: { NUMBA_NUM_THREADS: "1", OMP_NUM_THREADS: "1", OPENBLAS_NUM_THREADS: "1", MKL_NUM_THREADS: "1" }
+    volumes: ["./data:/app/data", "./results:/app/results", "./configs:/app/configs"]
+    ports: ["8000:8000"]
+  ui:
+    build: { context: ., dockerfile: frontend/Dockerfile }
+    depends_on: [api]
+    ports: ["5173:80"]
