@@ -13,7 +13,6 @@ from taqpso.api.main import app as api_app
 from taqpso.api.main import lifespan
 
 
-
 class _UI(StaticFiles):
     """Hashed build assets are immutable; index.html must always revalidate."""
 
