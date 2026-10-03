@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { api, type S } from "../api/client";
 import ConvergenceChart from "../components/charts/ConvergenceChart";
-import MapView, { IncidentLayer, RouteLayer, VehicleMarker } from "../components/map/MapView";
+import MapView, { CongestionLayer, IncidentLayer, RouteLayer, VehicleMarker } from "../components/map/MapView";
 import KpiStrip from "../components/panels/KpiStrip";
 import { Button, Field, StatusBadge } from "../components/ui/ui";
 import Shell from "../components/ui/Shell";
@@ -10,23 +11,51 @@ import { useStore } from "../state/store";
 
 export default function IncidentPage() {
   const st = useStore();
-  const [drawing, setDrawing] = useState(false);
-  const [poly, setPoly] = useState<[number, number][]>([]);
+  const picking = true;
+  const [roads, setRoads] = useState<S["CongestionEdge"][]>([]);
+  const [picked, setPicked] = useState<number[]>([]); // directed edge ids; a click closes both directions
   const [severity, setSeverity] = useState(0.1);
   const [startH, setStartH] = useState(18);
   const [durH, setDurH] = useState(1);
   const [mu, setMu] = useState(0);
+  const [hover, setHover] = useState(-1);
   const [ghost, setGhost] = useState(true);
 
+  useEffect(() => { api.congestion(70).then((c) => setRoads(c.edges)).catch(() => setRoads([])); }, []);
+
   useEffect(() => {
-    const h = (e: KeyboardEvent) => {
-      if (e.key === "i" || e.key === "I") { setDrawing(true); setPoly([]); }
-      if (e.key === "Escape") { setDrawing(false); setPoly([]); }
-      if (e.key === "Enter" && drawing && poly.length >= 3) setDrawing(false);
-    };
+    const h = (e: KeyboardEvent) => { if (e.key === "Escape") setPicked([]); };
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
-  }, [drawing, poly.length]);
+  }, []);
+
+  // Directed edge id -> id of the opposite direction of the same road (if any).
+  const reverse = useMemo(() => {
+    const key = (a: [number, number], b: [number, number]) => `${a[0]},${a[1]}|${b[0]},${b[1]}`;
+    const at = new Map(roads.map((r, i) => [key(r.a, r.b), i]));
+    return roads.map((r) => at.get(key(r.b, r.a)));
+  }, [roads]);
+
+  const nearest = (lon: number, lat: number): number => {
+    if (!roads.length) return -1;
+    const k = Math.cos((lat * Math.PI) / 180);
+    let best = -1, bd = Infinity;
+    roads.forEach((r, i) => {
+      const ax = r.a[0] * k, ay = r.a[1], bx = r.b[0] * k, by = r.b[1], px = lon * k;
+      const dx = bx - ax, dy = by - ay, L2 = dx * dx + dy * dy;
+      const t = L2 ? Math.max(0, Math.min(1, ((px - ax) * dx + (lat - ay) * dy) / L2)) : 0;
+      const d = Math.hypot(px - (ax + t * dx), lat - (ay + t * dy));
+      if (d < bd) { bd = d; best = i; }
+    });
+    return bd > 0.0005 ? -1 : best; // ~50 m: ignore points far from any road
+  };
+
+  const pickRoad = (lon: number, lat: number) => {
+    const best = nearest(lon, lat);
+    if (best < 0) return;
+    const ids = [best, ...(reverse[best] !== undefined ? [reverse[best] as number] : [])];
+    setPicked((p) => (p.includes(best) ? p.filter((e) => !ids.includes(e)) : [...p, ...ids.filter((e) => !p.includes(e))]));
+  };
 
   const busy = st.state === "solving" || st.state === "optimising";
   const ready = !!st.before || (st.plan && st.jobId);
@@ -39,9 +68,12 @@ export default function IncidentPage() {
   return (
     <Shell rightTitle="Incident response"
       left={<>
-        <p className="text-sm">Solve a plan on the Plan page first, then draw the blocked area on the map.</p>
-        <Button onClick={() => { setDrawing(true); setPoly([]); }} variant={drawing ? "primary" : "default"} className="w-full">Draw blocked area (I)</Button>
-        <p className="text-xs text-muted">{drawing ? "Click the map to add corners. Press Enter to finish or Esc to cancel." : poly.length ? `${poly.length} corners drawn` : "No area drawn yet"}</p>
+        <p className="text-sm">Solve a plan on the Plan page first, then click the roads to close on the map.</p>
+        <p className="text-xs text-muted">{roads.length ? "Click a road on the map to close it; click it again to reopen. Click several roads to close a longer stretch." : "Loading the road network…"}</p>
+        <div className="flex gap-1">
+          <p className="flex-1 self-center text-sm">{picked.length ? `${new Set(picked.map((e) => Math.min(e, reverse[e] ?? e))).size} road segment(s) closed` : "No roads selected yet"}</p>
+          <Button className="text-xs" disabled={!picked.length} onClick={() => setPicked([])}>Clear (Esc)</Button>
+        </div>
         <Field label="Severity (speed factor)"><div className="flex gap-1">
           <Button variant={severity === 0.1 ? "primary" : "default"} className="flex-1 text-xs" onClick={() => setSeverity(0.1)}>Blocked · 0.1</Button>
           <Button variant={severity === 0.4 ? "primary" : "default"} className="flex-1 text-xs" onClick={() => setSeverity(0.4)}>Heavy · 0.4</Button></div></Field>
@@ -50,8 +82,8 @@ export default function IncidentPage() {
         <Field label={`Duration: ${durH} h`}><input type="range" min={0.25} max={4} step={0.25} value={durH} onChange={(e) => setDurH(+e.target.value)} className="w-full" /></Field>
         <Field label={`Stability vs quality (μ = ${mu})`}><input type="range" min={0} max={0.05} step={0.005} value={mu} onChange={(e) => setMu(+e.target.value)} className="w-full" /></Field>
         <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={ghost} onChange={(e) => setGhost(e.target.checked)} />Show the previous plan</label>
-        <Button variant="danger" className="w-full border-2" disabled={!ready || poly.length < 3 || busy}
-          onClick={() => void simulateIncident({ polygon: poly, factor: severity, t_start: startH * 3600, t_end: (startH + durH) * 3600, budget_s: 10, mu, seed: 0 })}>Simulate incident</Button>
+        <Button variant="danger" className="w-full border-2" disabled={!ready || !picked.length || busy}
+          onClick={() => void simulateIncident({ edges: picked, factor: severity, t_start: startH * 3600, t_end: (startH + durH) * 3600, budget_s: 10, mu, seed: 0 })}>Simulate incident</Button>
         {st.error && <p role="alert" className="text-sm text-danger">{st.error}</p>}
       </>}
       right={<>
@@ -67,10 +99,12 @@ export default function IncidentPage() {
         <ConvergenceChart data={st.trace} />
       </>}>
       
-        <MapView onClick={(lon, lat) => drawing && setPoly((p) => [...p, [lon, lat]])}>
+        <MapView onClick={pickRoad} onHover={(p) => setHover(p ? nearest(p[0], p[1]) : -1)}>
           {ghost && st.before && <RouteLayer geometry={st.before.geometry} ghost />}
           {st.plan && <RouteLayer geometry={st.plan.geometry} dashed={st.state === "safe_plan"} />}
-          {poly.length > 1 && <IncidentLayer edges={[[...poly, poly[0]]]} />}
+          {picking && <CongestionLayer edges={roads} faint />}
+          {hover >= 0 && !picked.includes(hover) && <IncidentLayer edges={[[roads[hover].a, roads[hover].b]]} hover />}
+          {picked.length > 0 && <IncidentLayer edges={picked.map((e) => [roads[e].a, roads[e].b])} />}
           {st.vehicles.map((v) => <VehicleMarker key={v.vehicle} lon={v.lon} lat={v.lat} label={`V${v.vehicle + 1}`} eta={v.eta_s} />)}
         </MapView>
       

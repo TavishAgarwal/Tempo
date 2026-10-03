@@ -10,12 +10,17 @@ const dark = () => true; // Tempo is a dark control-room UI
 
 function Fit({ bbox }: { bbox: [number, number, number, number] | undefined }) {
   const map = useMap();
-  useEffect(() => { if (bbox) map.fitBounds([[bbox[1], bbox[0]], [bbox[3], bbox[2]]]); }, [bbox, map]);
+  const key = bbox?.join(",");  // depend on the values: a new array each render must not re-fit (it resets the user's zoom)
+  useEffect(() => { if (bbox) map.fitBounds([[bbox[1], bbox[0]], [bbox[3], bbox[2]]]); }, [key, map]); // eslint-disable-line react-hooks/exhaustive-deps
   return null;
 }
 
-function Clicks({ onClick }: { onClick?: (lon: number, lat: number) => void }) {
-  useMapEvents({ click: (e) => onClick?.(e.latlng.lng, e.latlng.lat) });
+function Clicks({ onClick, onHover }: { onClick?: (lon: number, lat: number) => void; onHover?: (p: [number, number] | null) => void }) {
+  useMapEvents({
+    click: (e) => onClick?.(e.latlng.lng, e.latlng.lat),
+    mousemove: (e) => onHover?.([e.latlng.lng, e.latlng.lat]),
+    mouseout: () => onHover?.(null),
+  });
   return null;
 }
 
@@ -35,23 +40,23 @@ export function RouteLayer({ geometry, dashed = false, ghost = false }: { geomet
   );
 }
 
-export function CongestionLayer({ edges }: { edges: S["CongestionEdge"][] }) {
+export function CongestionLayer({ edges, faint = false }: { edges: S["CongestionEdge"][]; faint?: boolean }) {
   return (
     <>
       {edges.map((e, i) => (
         <Polyline key={i} positions={[[e.a[1], e.a[0]], [e.b[1], e.b[0]]]}
-          pathOptions={{ color: congColor(e.ratio), weight: e.road_class <= 2 ? 4 : 2, opacity: 0.6 }} />
+          pathOptions={faint ? { color: "#d9dec9", weight: e.road_class <= 2 ? 3 : 2, opacity: 0.45, interactive: false } : { color: congColor(e.ratio), weight: e.road_class <= 2 ? 4 : 2, opacity: 0.6 }} />
       ))}
     </>
   );
 }
 
-export function IncidentLayer({ edges }: { edges: [number, number][][] }) {
+export function IncidentLayer({ edges, hover = false }: { edges: [number, number][][]; hover?: boolean }) {
   return (
     <>
       {edges.map((e, i) => (
         <Polyline key={i} positions={e.map(([x, y]) => [y, x] as [number, number])}
-          pathOptions={{ color: "#ff4d3d", weight: 8, opacity: 0.8, dashArray: "2 6" }} />
+          pathOptions={hover ? { color: "#f0b429", weight: 7, opacity: 0.9, interactive: false } : { color: "#ff4d3d", weight: 8, opacity: 0.9, interactive: false }} />
       ))}
     </>
   );
@@ -65,7 +70,7 @@ export function VehicleMarker({ lon, lat, label, eta }: { lon: number; lat: numb
   );
 }
 
-export default function MapView({ children, onClick }: { children?: React.ReactNode; onClick?: (lon: number, lat: number) => void }) {
+export default function MapView({ children, onClick, onHover }: { children?: React.ReactNode; onClick?: (lon: number, lat: number) => void; onHover?: (p: [number, number] | null) => void }) {
   const detail = useStore((s) => s.detail);
   const pts = detail ? [detail.depot, ...detail.customers.map((c) => [c.lon, c.lat] as [number, number])] : [];
   const bbox: [number, number, number, number] | undefined = pts.length
@@ -78,8 +83,8 @@ export default function MapView({ children, onClick }: { children?: React.ReactN
     <MapContainer center={[28.628, 77.209]} zoom={14} className="h-full w-full" zoomControl>
       <TileLayer url={url} className={darkTiles ? "tiles-dark" : ""} eventHandlers={{ tileerror: () => useStore.getState().set({ tilesOffline: true }), tileload: () => { if (useStore.getState().tilesOffline) useStore.getState().set({ tilesOffline: false }); } }} attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' />
       <Fit bbox={bbox} />
-      <Clicks onClick={onClick} />
-      {bbox && <Rectangle bounds={[[bbox[1], bbox[0]], [bbox[3], bbox[2]]]} pathOptions={{ color: "transparent", fillOpacity: 0 }} />}
+      <Clicks onClick={onClick} onHover={onHover} />
+      {bbox && <Rectangle bounds={[[bbox[1], bbox[0]], [bbox[3], bbox[2]]]} pathOptions={{ color: "transparent", fillOpacity: 0, interactive: false }} />}
       {detail && <Marker position={[detail.depot[1], detail.depot[0]]} icon={depotIcon}><Tooltip>Depot</Tooltip></Marker>}
       {detail?.customers.map((c, i) => (
         <CircleMarker key={i} center={[c.lat, c.lon]} radius={3 + c.demand * 0.5} pathOptions={{ color: "#b8f04a", fillColor: "#0c0d0a", fillOpacity: 0.9, weight: 1.5 }}>
