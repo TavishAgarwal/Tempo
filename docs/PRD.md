@@ -1,4 +1,4 @@
-# PRD — TA-QPSO: Traffic-Aware Quantum-Inspired Vehicle Routing
+# PRD — Tempo: Traffic-Aware Quantum-Inspired Vehicle Routing
 
 SIH 2026 · PS 26137 (Egreen Quanta) · Software · Transportation & Logistics
 

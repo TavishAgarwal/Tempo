@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     state.shutdown_jobs()
 
 
-app = FastAPI(title="TA-QPSO API", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="Tempo API", version="0.1.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 for r in (
     instances.router,

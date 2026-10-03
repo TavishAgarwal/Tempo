@@ -1,4 +1,4 @@
-# Rules — TA-QPSO
+# Rules — Tempo
 
 ## Claims and wording
 - DO say "quantum-inspired classical optimisation". DON'T say quantum computer, qubits, quantum speedup, or "reduced complexity".

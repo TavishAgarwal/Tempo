@@ -1,7 +1,7 @@
 {
  "openapi": "3.1.0",
  "info": {
-  "title": "TA-QPSO API",
+  "title": "Tempo API",
   "version": "0.1.0"
  },
  "paths": {

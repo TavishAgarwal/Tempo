@@ -1,4 +1,4 @@
-# Phases — TA-QPSO
+# Phases — Tempo
 
 Rule: no phase starts until the previous gate passes. Feature freeze after Phase 6.
 

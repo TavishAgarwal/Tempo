@@ -134,7 +134,6 @@ html.lp-on, html.lp-on body { background: #0c0d0a; background-image: none; font-
   .room[data-tone="bone"] { --panel: rgba(230, 227, 211, .94); }
   .copy p { font-size: 15px; } .copy p.lede { font-size: 16px; }
   .landing h1, .landing h2, .lay-clock h2, .lay-parcels h2, .lay-closure h2, .lay-honest h2, .landing .lay-notyet h2 { font-size: 26px; } .landing h2.final { font-size: 28px; }
-  .hand.big { font-size: 26px !important; } .hand.hint { display: none; }
   .fsw { display: none; } .g-count { display: none; }
   .g-hex { gap: 0; right: 6px; } .g-hex svg { width: 12px; height: 12px; }
   .label { grid-template-columns: 1fr; } .label > div { border-right: 0; border-bottom: 1px solid #171717; }

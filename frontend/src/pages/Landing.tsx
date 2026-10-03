@@ -5,7 +5,7 @@ import { loadLanding, type SceneData } from "../scene/data";
 import { M } from "../scene/numbers";
 import { startScroll } from "../scene/scroll";
 import { useStore } from "../state/store";
-import { Mark } from "./stickers";
+import { Mark } from "./Mark";
 import "@fontsource/inter/600.css";
 import "@fontsource/inter/700.css";
 import "@fontsource/jetbrains-mono/500.css";

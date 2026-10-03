@@ -1,4 +1,4 @@
-# Tempo — Traffic-Aware Vehicle Routing (TA-QPSO)
+# Tempo — Traffic-Aware Vehicle Routing
 
 **Smart India Hackathon 2026 · Problem Statement 26137 (Egreen Quanta) · Software · Transportation & Logistics**
 

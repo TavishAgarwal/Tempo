@@ -1,13 +1,9 @@
 import Lenis from "lenis";
 
 /** Single source of truth for scroll. Everything reads `scroll.p` inside rAF / useFrame; no React state. */
-export const scroll = { p: 0, alt: 3000 };
+export const scroll = { p: 0 };
 
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
-export const smooth = (a: number, b: number, x: number) => {
-  const t = clamp01((x - a) / (b - a));
-  return t * t * (3 - 2 * t);
-};
 
 export const reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 

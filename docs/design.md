@@ -1,4 +1,4 @@
-# Design — TA-QPSO Dashboard
+# Design — Tempo Dashboard
 
 ## 1. Principles
 - Map first: routes and traffic are the story; panels support it.

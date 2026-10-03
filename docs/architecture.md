@@ -1,4 +1,4 @@
-# Architecture — TA-QPSO
+# Architecture — Tempo
 
 ## 1. High-level flow
 

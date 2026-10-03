@@ -1,4 +1,4 @@
-# Implementation Plan — TA-QPSO
+# Implementation Plan — Tempo
 
 SIH 2026 · PS 26137 · Derived from `PRD.md`, `architecture.md`, `phases.md`, `rules.md`, `design.md`.
 
