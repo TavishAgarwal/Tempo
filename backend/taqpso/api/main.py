@@ -14,9 +14,13 @@ from taqpso.api.routes import incidents, instances, live, paths, results, solve
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    import threading
+
     from taqpso.api.worker import warmup
 
-    warmup()  # JIT/load kernels so the demo has no first-call lag
+    # JIT/load kernels in the background: the UI and read-only endpoints answer at once
+    # (matters on scale-to-zero cold starts); a solve started during warm-up just waits on JIT.
+    threading.Thread(target=warmup, name="warmup", daemon=True).start()
     state.jobs()
     yield
     state.shutdown_jobs()

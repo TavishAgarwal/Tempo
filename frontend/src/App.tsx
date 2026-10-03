@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Toast } from "./components/ui/ui";
-import AboutPage from "./pages/AboutPage";
-import BenchmarkPage from "./pages/BenchmarkPage";
-import IncidentPage from "./pages/IncidentPage";
-import PathPage from "./pages/PathPage";
-import Landing from "./pages/Landing";
-import PlanPage from "./pages/PlanPage";
+const AboutPage = lazy(() => import("./pages/AboutPage"));
+const BenchmarkPage = lazy(() => import("./pages/BenchmarkPage"));
+const IncidentPage = lazy(() => import("./pages/IncidentPage"));
+const PathPage = lazy(() => import("./pages/PathPage"));
+const Landing = lazy(() => import("./pages/Landing"));
+const PlanPage = lazy(() => import("./pages/PlanPage"));
 import { loadScenarios } from "./state/actions";
 import { pretty } from "./lib";
 import { useStore, type Page } from "./state/store";
@@ -22,7 +22,7 @@ export default function App() {
   const { page, set, offline, tilesOffline, toast, scenario, log, logOpen } = useStore();
   useEffect(() => { void loadScenarios(); }, []);
   useEffect(() => { if (toast) { const t = setTimeout(() => set({ toast: null }), 3500); return () => clearTimeout(t); } }, [toast, set]);
-  if (page === "landing") return <Landing />;
+  if (page === "landing") return <Suspense fallback={null}><Landing /></Suspense>;
   return (
     <div className="flex h-screen flex-col gap-2 p-2 font-sans">
       <header className="glass tick flex h-12 shrink-0 items-stretch gap-4 pl-3 pr-3 sm:gap-5">
@@ -46,11 +46,13 @@ export default function App() {
       {offline && <div role="status" className="bg-surface px-4 py-1 text-sm text-warning">Offline mode — using saved scenarios</div>}
       {tilesOffline && <div role="status" className="bg-surface px-4 py-1 text-sm text-warning">Map tiles unavailable offline — routes and plans are still shown</div>}
       <div className="min-h-0 flex-1 overflow-hidden">
+        <Suspense fallback={null}>
         {page === "plan" && <PlanPage />}
         {page === "incident" && <IncidentPage />}
         {page === "benchmark" && <BenchmarkPage />}
         {page === "path" && <PathPage />}
         {page === "about" && <AboutPage />}
+        </Suspense>
       </div>
       <footer className="glass shrink-0 px-3 py-1 font-mono text-[11px] text-muted">
         <button className="underline" onClick={() => set({ logOpen: !logOpen })}>{logOpen ? "Hide" : "Show"} solver log ({log.length})</button>

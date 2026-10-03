@@ -1,5 +1,5 @@
-import { Children, isValidElement, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import Stage from "../gallery/Stage";
+import { Children, isValidElement, lazy, Suspense, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+const Stage = lazy(() => import("../gallery/Stage"));
 import { G, ROOMS } from "../gallery/state";
 import { loadLanding, type SceneData } from "../scene/data";
 import { M } from "../scene/numbers";
@@ -201,7 +201,7 @@ export default function Landing() {
               </div>
             ))}
           </div>
-          <Stage data={d} />
+          <Suspense fallback={null}><Stage data={d} /></Suspense>
           <div className="track fgT" ref={fgT}>
             {rooms.map((r, i) => (
               <section key={i} className={`room lay-${r.lay}`} data-tone={r.tone} aria-label={r.name}>
